@@ -15,14 +15,14 @@ Default RPC Port: 46393
 
 Sample config file:
 
-create a file and name it FairCoin.conf
-
-And copy/paste the following contents:
-
 rpcuser=changeme
+
 rpcpassword=changeme2
+
 gen=0
+
 server=1
-addnode=162.243.255.118
+
+addnode=54.84.156.138
 
 
