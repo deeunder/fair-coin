@@ -35,7 +35,7 @@ namespace Checkpoints
 
     static bool HACK_RELOAD = false;
 
-    bool SetHackReload(bool val)
+    void SetHackReload(bool val)
     {
         HACK_RELOAD = val;
     }

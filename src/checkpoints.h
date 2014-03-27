@@ -46,7 +46,7 @@ namespace Checkpoints
     bool IsMatureSyncCheckpoint();
     bool IsSyncCheckpointTooOld(unsigned int nSeconds);
 
-    bool SetHackReload(bool val);
+    void SetHackReload(bool val);
     bool GetHackReload();
 
 }
