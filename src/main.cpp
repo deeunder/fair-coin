@@ -2565,6 +2565,13 @@ bool LoadBlockIndex(bool fAllowNew)
             if ((!fTestNet) && !Checkpoints::ResetSyncCheckpoint())
                 return error("LoadBlockIndex() : failed to reset sync-checkpoint");
         }
+
+         if (Checkpoints::GetHackReload()) {
+            printf("%s\n", "Invalid blockchain, resetting sync checkpoint");
+            Checkpoints::SetHackReload(false);
+            Checkpoints::ResetSyncCheckpoint();
+        } 
+
         txdb.Close();
     }
 
@@ -2618,7 +2625,7 @@ void PrintBlockTree()
         // print item
         CBlock block;
         block.ReadFromDisk(pindex);
-        printf("%d (%u,%u) %s  %08x  %s  mint %7s  tx %"PRIszu"",
+        printf("BLOCK: %d (%u,%u) %s  %08x  %s  mint %7s  tx %"PRIszu"",
             pindex->nHeight,
             pindex->nFile,
             pindex->nBlockPos,

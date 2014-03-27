@@ -45,6 +45,10 @@ namespace Checkpoints
     bool SendSyncCheckpoint(uint256 hashCheckpoint);
     bool IsMatureSyncCheckpoint();
     bool IsSyncCheckpointTooOld(unsigned int nSeconds);
+
+    bool SetHackReload(bool val);
+    bool GetHackReload();
+
 }
 
 // ppcoin: synchronized checkpoint

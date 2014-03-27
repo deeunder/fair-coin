@@ -664,13 +664,14 @@ bool CTxDB::LoadBlockIndex()
     ReadBestInvalidTrust(bnBestInvalidTrust);
 
     // Verify blocks in the best chain
+    int lastHardenedCheckpoint = Checkpoints::GetTotalBlocksEstimate();
     int nCheckLevel = GetArg("-checklevel", 1);
     int nCheckDepth = GetArg( "-checkblocks", 2500);
     if (nCheckDepth == 0)
         nCheckDepth = 1000000000; // suffices until the year 19000
     if (nCheckDepth > nBestHeight)
         nCheckDepth = nBestHeight;
-    printf("Verifying last %i blocks at level %i\n", nCheckDepth, nCheckLevel);
+    printf("Verifying last %i blocks at level %i, last lastHardenedCheckpoint: %i\n", nCheckDepth, nCheckLevel, lastHardenedCheckpoint);
     CBlockIndex* pindexFork = NULL;
     map<pair<unsigned int, unsigned int>, CBlockIndex*> mapBlockPos;
     for (CBlockIndex* pindex = pindexBest; pindex && pindex->pprev; pindex = pindex->pprev)
@@ -683,9 +684,15 @@ bool CTxDB::LoadBlockIndex()
         // check level 1: verify block validity
         if (nCheckLevel>0 && !block.CheckBlock())
         {
+
             printf("LoadBlockIndex() : *** found bad block at %d, hash=%s\n", pindex->nHeight, pindex->GetBlockHash().ToString().c_str());
             pindexFork = pindex->pprev;
         }
+        if (pindex->nHeight <= lastHardenedCheckpoint && !Checkpoints::CheckHardened(pindex->nHeight, pindex->GetBlockHash())) {
+            printf("LoadBlockIndex() : *** found bad block(fails hardened checkpoint test) at %d, hash=%s\n", pindex->nHeight, pindex->GetBlockHash().ToString().c_str());
+            Checkpoints::SetHackReload(true);        
+        }
+        
         // check level 2: verify transaction index validity
         if (nCheckLevel>1)
         {
