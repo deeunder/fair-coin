@@ -1027,8 +1027,7 @@ unsigned int static GetNextTargetRequired(const CBlockIndex* pindexLast, bool fP
     int64 nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
 
 
-    if (nActualSpacing <= 0) {
-        printf("NEGATIVE(or zero) nActualSpacing, return min diff\n");
+    if (nActualSpacing <= 0 && pindexPrev->nHeight > 2490) {
         return bnTargetLimit.GetCompact();
     }
 
