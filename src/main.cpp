@@ -1026,6 +1026,12 @@ unsigned int static GetNextTargetRequired(const CBlockIndex* pindexLast, bool fP
 
     int64 nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
 
+
+    if (nActualSpacing <= 0) {
+        printf("NEGATIVE(or zero) nActualSpacing, return min diff\n");
+        return bnTargetLimit.GetCompact();
+    }
+
     // ppcoin: target change every block
     // ppcoin: retarget with exponential moving toward target spacing
     CBigNum bnNew;
@@ -1047,8 +1053,10 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits)
     bnTarget.SetCompact(nBits);
 
     // Check range
-    if (bnTarget <= 0)
+    if (bnTarget <= 0 || bnTarget > bnProofOfWorkLimit) {
+        printf("CheckProofOfWork() : nBits below minimum work: %s > %s\n", bnTarget.getuint256().GetHex().c_str(), bnProofOfWorkLimit.getuint256().GetHex().c_str());
         return error("CheckProofOfWork() : nBits below minimum work");
+    }
 
     // Check proof of work matches claimed amount
     if (hash > bnTarget.getuint256())
