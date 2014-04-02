@@ -2178,9 +2178,8 @@ CBigNum CBlockIndex::GetBlockTrust() const
     }
     else
     {
-        // Calculate work amount for block
-        CBigNum bnPoWTrust = (bnProofOfWorkLimit / (bnTarget+1));
-        return bnPoWTrust > 1 ? bnPoWTrust : 1;
+        // Dont really trust these (PPC model)
+        return 1;
     }
 }
 bool ProcessBlock(CNode* pfrom, CBlock* pblock)
